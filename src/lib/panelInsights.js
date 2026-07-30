@@ -158,7 +158,16 @@ export function generateInsights(persons) {
     ...(absent.length
       ? [{ tag: 'Gaps del equipo', color: '#ffb86c', title: `${absent.length} eneatipo${absent.length > 1 ? 's' : ''} ausente${absent.length > 1 ? 's' : ''}`, text: `Sin T${absent.join(', T')}. Puntos ciegos: ${absent.slice(0, 2).map((t) => TIPO_ROL_EQUIPO[t]).join(' · ')}.` }]
       : []),
-    { tag: 'Fortalezas colectivas', color: '#50fa7b', title: 'Capacidades naturales del equipo', text: [hasLeader ? '✓ Liderazgo y ejecución (T1,T3 o T8)' : '✗ Falta perfil de liderazgo', hasCohesion ? '✓ Cohesión y lealtad (T2,T6 o T9)' : '✗ Falta cohesionador emocional', hasCreative ? '✓ Creatividad e innovación (T4,T5 o T7)' : '✗ Falta perfil creativo/analítico'].join(' · ') },
+    {
+      tag: 'Fortalezas colectivas',
+      color: '#50fa7b',
+      title: 'Capacidades naturales del equipo',
+      items: [
+        { ok: hasLeader, label: hasLeader ? 'Liderazgo y ejecución (T1, T3 o T8)' : 'Falta perfil de liderazgo' },
+        { ok: hasCohesion, label: hasCohesion ? 'Cohesión y lealtad (T2, T6 o T9)' : 'Falta cohesionador emocional' },
+        { ok: hasCreative, label: hasCreative ? 'Creatividad e innovación (T4, T5 o T7)' : 'Falta perfil creativo/analítico' },
+      ],
+    },
     { tag: 'Score promedio', color: '#e4c76a', title: `Score base promedio del equipo: ${avgScore}%`, text: 'Un score >50% indica claridad tipológica: cada persona tiene un patrón predominante bien definido, lo que facilita predecir comportamientos bajo presión y diseñar estrategias de gestión personalizadas.' },
     { tag: 'Comunicación', color: '#e17bd7', title: 'Estilo comunicacional predominante', text: comunicacionMap[topTriada[0]] || '' },
     { tag: 'Recomendación', color: '#6be1e3', title: 'Próximos pasos sugeridos', text: recomendacion },

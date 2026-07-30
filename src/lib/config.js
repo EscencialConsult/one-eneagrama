@@ -1,12 +1,12 @@
 /**
- * ⚙️ CONFIGURACIÓN CENTRAL DEL SISTEMA — ONE Eneagrama
+ * CONFIGURACIÓN CENTRAL DEL SISTEMA — ONE Eneagrama
  * Réplica de Marca.js de la versión AppScript.
  * Las URLs de Google Apps Script fueron reemplazadas por Supabase
  * (ver src/lib/supabase.js). Las rutas ahora son rutas de React Router.
  */
 
 export const CONFIG = {
-  // 🎨 Identidad de Marca: ONE
+  // Identidad de Marca: ONE
   brand: {
     name: 'ONE — Evaluación Eneagrama',
     logo: '/img/one-iconocolor.png',

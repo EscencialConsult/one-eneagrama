@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import {
+  ArrowsRightLeftIcon,
+  CheckCircleIcon,
+  CheckIcon,
+  ExclamationTriangleIcon,
+  XCircleIcon,
+} from '@heroicons/react/24/outline';
 import { CONFIG } from '../lib/config.js';
 import { Session } from '../lib/session.js';
 import { Auth } from '../lib/auth.js';
@@ -303,7 +310,25 @@ export default function PanelData() {
                       {ins.tag}
                     </div>
                     <div className="mb-2 font-title text-sm font-bold">{ins.title}</div>
-                    <div className="text-xs leading-relaxed text-one-slate" dangerouslySetInnerHTML={{ __html: sanitizeText(ins.text).replace(/·/g, '·<wbr>') }} />
+                    {ins.items ? (
+                      <ul className="space-y-1.5 text-xs leading-relaxed text-one-slate">
+                        {ins.items.map((item, ii) => (
+                          <li key={ii} className="flex items-start gap-1.5">
+                            {item.ok ? (
+                              <CheckCircleIcon className="mt-0.5 h-4 w-4 shrink-0 text-green-400" />
+                            ) : (
+                              <XCircleIcon className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
+                            )}
+                            <span>{sanitizeText(item.label)}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div
+                        className="text-xs leading-relaxed text-one-slate"
+                        dangerouslySetInnerHTML={{ __html: sanitizeText(ins.text).replace(/·/g, '·<wbr>') }}
+                      />
+                    )}
                   </div>
                 ))}
               </div>
@@ -349,8 +374,10 @@ export default function PanelData() {
                   {compat.tensiones.length === 0 && <p className="text-xs text-one-slate">No se detectan tensiones significativas</p>}
                   {compat.tensiones.map((t, i) => (
                     <div key={i} className="rounded-lg border border-white/10 bg-black/30 p-3 text-xs">
-                      <strong>
-                        {sanitizeText(t.a.nombre)} ↔ {sanitizeText(t.b.nombre)}
+                      <strong className="inline-flex items-center gap-1.5">
+                        {sanitizeText(t.a.nombre)}
+                        <ArrowsRightLeftIcon className="h-3.5 w-3.5 text-one-slate" />
+                        {sanitizeText(t.b.nombre)}
                       </strong>
                       <div className="mt-1 text-one-slate">{t.razon}</div>
                     </div>
@@ -361,7 +388,11 @@ export default function PanelData() {
               <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
                 <h3 className="mb-3 font-title text-sm font-bold uppercase tracking-wider text-one-slate">Gaps del equipo</h3>
                 <div className="space-y-2">
-                  {compat.gaps.length === 0 && <p className="text-xs text-green-400">✓ Todos los tipos están representados</p>}
+                  {compat.gaps.length === 0 && (
+                    <p className="flex items-center gap-1.5 text-xs text-green-400">
+                      <CheckCircleIcon className="h-4 w-4" /> Todos los tipos están representados
+                    </p>
+                  )}
                   {compat.gaps.map((t) => (
                     <div key={t} className="rounded-lg border border-white/10 bg-black/30 p-3 text-xs">
                       <strong>
@@ -446,7 +477,7 @@ export default function PanelData() {
                     <ul className="space-y-1 text-xs text-one-slate">
                       {(TIPO_BURNOUT_SENALES[t] || []).map((s, i) => (
                         <li key={i} className="flex gap-1.5">
-                          <span className="text-red-400">⚠</span>
+                          <ExclamationTriangleIcon className="h-3.5 w-3.5 shrink-0 text-red-400" />
                           <span>{s}</span>
                         </li>
                       ))}
@@ -472,9 +503,13 @@ export default function PanelData() {
                           {TIPO_CORTO[t]}
                         </span>
                       </div>
-                      <p className="mb-2 text-[10px] font-bold uppercase text-green-400">✓ Fortaleza</p>
+                      <p className="mb-2 flex items-center gap-1 text-[10px] font-bold uppercase text-green-400">
+                        <CheckCircleIcon className="h-3.5 w-3.5" /> Fortaleza
+                      </p>
                       <p className="mb-3 text-xs text-one-slate">{d.fortaleza}</p>
-                      <p className="mb-2 text-[10px] font-bold uppercase text-orange-300">⚠ Limitación típica</p>
+                      <p className="mb-2 flex items-center gap-1 text-[10px] font-bold uppercase text-orange-300">
+                        <ExclamationTriangleIcon className="h-3.5 w-3.5" /> Limitación típica
+                      </p>
                       <p className="text-xs text-one-slate">{d.limitacion}</p>
                     </div>
                   );
@@ -503,8 +538,8 @@ export default function PanelData() {
                     <p className="mb-3 text-xs text-one-slate">{proj.razon}</p>
                     <div className="flex flex-wrap gap-1.5">
                       {proj.available.map((t) => (
-                        <span key={t} className="rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ color: TIPO_COLORS[t], backgroundColor: `${TIPO_COLORS[t]}22`, border: `1px solid ${TIPO_COLORS[t]}44` }}>
-                          T{t} ✓
+                        <span key={t} className="inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ color: TIPO_COLORS[t], backgroundColor: `${TIPO_COLORS[t]}22`, border: `1px solid ${TIPO_COLORS[t]}44` }}>
+                          T{t} <CheckIcon className="h-3 w-3" />
                         </span>
                       ))}
                       {proj.missing.map((t) => (

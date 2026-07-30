@@ -1,6 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LightBulbIcon, ScaleIcon, GlobeAltIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import {
+  LightBulbIcon,
+  ScaleIcon,
+  GlobeAltIcon,
+  SparklesIcon,
+  HeartIcon,
+  TrophyIcon,
+  PaintBrushIcon,
+  MagnifyingGlassIcon,
+  ShieldCheckIcon,
+  RocketLaunchIcon,
+  BoltIcon,
+  HandRaisedIcon,
+} from '@heroicons/react/24/outline';
 import { Session } from '../lib/session.js';
 import Footer from '../components/Footer.jsx';
 import LoginModal from '../components/LoginModal.jsx';
@@ -132,15 +145,15 @@ function Section({ id, children }) {
 
 /* ═══ Datos de contenido — 9 eneatipos (de Informe/eneagramaData.js) ═══ */
 const TIPOS = [
-  { n: 1, nombre: 'El Reformador', subtitulo: 'Idealista de sólidos principios', color: '#6e3eab', icono: '⚖️' },
-  { n: 2, nombre: 'El Ayudador', subtitulo: 'Preocupado y orientado a los demás', color: '#953a90', icono: '🤝' },
-  { n: 3, nombre: 'El Triunfador', subtitulo: 'Adaptable y orientado al éxito', color: '#e2b808', icono: '🏆' },
-  { n: 4, nombre: 'El Individualista', subtitulo: 'Romántico e introspectivo', color: '#47278c', icono: '🎭' },
-  { n: 5, nombre: 'El Investigador', subtitulo: 'Vehemente y cerebral', color: '#342f1d', icono: '🔬' },
-  { n: 6, nombre: 'El Leal', subtitulo: 'Comprometido y orientado a la seguridad', color: '#6e3eab', icono: '🛡️' },
-  { n: 7, nombre: 'El Entusiasta', subtitulo: 'Productivo y ajetreado', color: '#e2b808', icono: '✨' },
-  { n: 8, nombre: 'El Desafiador', subtitulo: 'Poderoso y dominante', color: '#280640', icono: '⚡' },
-  { n: 9, nombre: 'El Pacificador', subtitulo: 'Acomodadizo y humilde', color: '#47278c', icono: '🌿' },
+  { n: 1, nombre: 'El Reformador', subtitulo: 'Idealista de sólidos principios', color: '#6e3eab', Icono: ScaleIcon },
+  { n: 2, nombre: 'El Ayudador', subtitulo: 'Preocupado y orientado a los demás', color: '#953a90', Icono: HeartIcon },
+  { n: 3, nombre: 'El Triunfador', subtitulo: 'Adaptable y orientado al éxito', color: '#e2b808', Icono: TrophyIcon },
+  { n: 4, nombre: 'El Individualista', subtitulo: 'Romántico e introspectivo', color: '#47278c', Icono: PaintBrushIcon },
+  { n: 5, nombre: 'El Investigador', subtitulo: 'Vehemente y cerebral', color: '#342f1d', Icono: MagnifyingGlassIcon },
+  { n: 6, nombre: 'El Leal', subtitulo: 'Comprometido y orientado a la seguridad', color: '#6e3eab', Icono: ShieldCheckIcon },
+  { n: 7, nombre: 'El Entusiasta', subtitulo: 'Productivo y ajetreado', color: '#e2b808', Icono: RocketLaunchIcon },
+  { n: 8, nombre: 'El Desafiador', subtitulo: 'Poderoso y dominante', color: '#280640', Icono: BoltIcon },
+  { n: 9, nombre: 'El Pacificador', subtitulo: 'Acomodadizo y humilde', color: '#47278c', Icono: HandRaisedIcon },
 ];
 
 const INFO_CARDS = [
@@ -309,17 +322,21 @@ export default function Landing() {
               </div>
             </div>
 
-            <div className="flex flex-col items-center justify-center rounded-[28px] border border-slate-200 bg-white p-11 shadow-[0_25px_60px_rgba(15,23,42,.10)]">
-              <span className="mb-5 text-sm font-semibold tracking-[.02em] text-slate-700">
-                Los 9 Eneatipos
-              </span>
-              <div className="w-full max-w-[340px] rounded-2xl bg-white p-4">
-                <img
-                  src="/img/eneagrama.png"
-                  alt="Rueda del Eneagrama"
-                  className="h-auto w-full"
-                />
-              </div>
+            <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-[28px] border border-slate-200 bg-white p-8 shadow-[0_25px_60px_rgba(15,23,42,.10)] sm:p-11">
+              <div
+                className="pointer-events-none absolute inset-0"
+                aria-hidden="true"
+                style={{
+                  background:
+                    'radial-gradient(260px 260px at 50% 48%, rgba(107,225,227,.16), transparent 65%), radial-gradient(200px 200px at 78% 78%, rgba(225,123,215,.14), transparent 65%)',
+                }}
+              />
+              <Eyebrow dotClass="bg-one-pink shadow-[0_0_18px_rgba(225,123,215,.55)]">Los 9 Eneatipos</Eyebrow>
+              <img
+                src="/img/eneagrama.png"
+                alt="Rueda del Eneagrama"
+                className="relative mt-7 w-full max-w-[420px]"
+              />
             </div>
           </section>
 
@@ -372,10 +389,10 @@ export default function Landing() {
                   className="flex items-center gap-3.5 rounded-[16px] border border-slate-300 bg-white p-5 shadow-[0_8px_28px_rgba(15,23,42,.08)] transition-all duration-[180ms] hover:-translate-y-[3px] hover:border-slate-400 hover:shadow-[0_14px_38px_rgba(15,23,42,.14)]"
                 >
                   <div
-                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] text-2xl"
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px]"
                     style={{ backgroundColor: `${t.color}22`, border: `1px solid ${t.color}55` }}
                   >
-                    {t.icono}
+                    <t.Icono className="h-6 w-6" style={{ color: t.color }} />
                   </div>
                   <div>
                     <h3 className="m-0 font-title text-[15px] font-bold text-slate-900">

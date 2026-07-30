@@ -9,7 +9,7 @@ const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!url || !anonKey) {
   console.warn(
-    '⚠️ Faltan credenciales de Supabase. Copiá .env.example como .env y completá VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY.'
+    'Faltan credenciales de Supabase. Copiá .env.example como .env y completá VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY.'
   );
 }
 
