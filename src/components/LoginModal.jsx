@@ -56,12 +56,7 @@ export default function LoginModal({ mode, onClose, onModeChange }) {
   }
 
   return (
-    <div
-      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/85 p-5 backdrop-blur-[10px]"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/85 p-5 backdrop-blur-[10px]">
       <div className="relative w-full max-w-[450px] rounded-[28px] border border-one-mist/25 bg-one-white/8 p-10 shadow-[0_18px_60px_rgba(0,0,0,.55)] backdrop-blur-[20px] max-[560px]:p-8 max-[560px]:px-6 max-[480px]:p-7 max-[480px]:px-5">
         <button
           className="absolute right-5 top-5 cursor-pointer p-[5px] text-2xl leading-none text-one-mist/60 transition-colors hover:text-one-white"
