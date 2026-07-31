@@ -120,6 +120,7 @@ export default function PanelData() {
   const [modalIdx, setModalIdx] = useState(null);
   const [modalTab, setModalTab] = useState('perfil');
   const [tipoPopup, setTipoPopup] = useState(null); // tipo (1-9) para el popup "ver personas de este tipo"
+  const [activeTab, setActiveTab] = useState('overview'); // overview | equipo | gestion | cultura
 
   const mainChartRef = useRef(null);
   const triadasChartRef = useRef(null);
@@ -222,7 +223,7 @@ export default function PanelData() {
         },
       });
     }
-  }, [loading, chartType, mainChartData]);
+  }, [loading, chartType, mainChartData, activeTab]);
 
   // Chart.js — doughnut de tríadas
   useEffect(() => {
@@ -234,7 +235,7 @@ export default function PanelData() {
       data: { labels: triadasChartData.labels, datasets: [{ data: triadasChartData.data, backgroundColor: triadasChartData.colors, borderWidth: 0, hoverOffset: 6 }] },
       options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { display: false } } },
     });
-  }, [loading, triadasChartData]);
+  }, [loading, triadasChartData, activeTab]);
 
   // Chart.js — radar de clima organizacional
   useEffect(() => {
@@ -251,7 +252,7 @@ export default function PanelData() {
         scales: { r: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a4a8c0', backdropColor: 'transparent', stepSize: 25 }, pointLabels: { color: '#a4a8c0', font: { size: 10 } } } },
       },
     });
-  }, [loading, climaRadarData]);
+  }, [loading, climaRadarData, activeTab]);
 
   // Chart.js — barras de energía del equipo (personas por tipo)
   useEffect(() => {
@@ -271,7 +272,7 @@ export default function PanelData() {
         },
       },
     });
-  }, [loading, energiaBarData]);
+  }, [loading, energiaBarData, activeTab]);
 
   function logout() {
     Auth.logout();
@@ -285,14 +286,35 @@ export default function PanelData() {
 
       <header className="sticky top-0 z-50 border-b border-white/10 bg-black/60 backdrop-blur-xl">
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+          <div className="flex flex-col items-center justify-between gap-4 lg:flex-row">
             <div>
               <h2 className="bg-gradient-to-r from-one-cyan to-one-pink bg-clip-text font-title text-xl font-bold text-transparent">
                 Panel RRHH — Análisis del Equipo
               </h2>
               <p className="text-xs text-one-slate">{session ? `${session.userName} (${session.userEmail})` : ''}</p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {!loading && persons.length > 0 && (
+                <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 p-1">
+                  {[
+                    ['overview', 'General'],
+                    ['equipo', 'Equipo'],
+                    ['gestion', 'Gestión'],
+                    ['cultura', 'Cultura'],
+                  ].map(([key, label]) => (
+                    <button
+                      key={key}
+                      onClick={() => setActiveTab(key)}
+                      className={
+                        'cursor-pointer rounded-md px-3 py-1.5 text-xs font-bold transition-colors ' +
+                        (activeTab === key ? 'bg-one-cyan/20 text-one-cyan' : 'text-one-slate hover:text-white')
+                      }
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              )}
               <Link
                 to={CONFIG.routes.adminDashboard}
                 className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-sm font-semibold transition-all hover:-translate-y-0.5 hover:bg-white/10"
@@ -319,6 +341,8 @@ export default function PanelData() {
             <p className="max-w-md text-sm">Cuando tus usuarios completen el test Eneagrama, vas a ver acá el análisis del equipo.</p>
           </div>
         ) : (
+          <>
+          {activeTab === 'overview' && (
           <>
             {/* Hero stats */}
             <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -370,58 +394,6 @@ export default function PanelData() {
                     ))}
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Team grid */}
-            <div className="mb-8 rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <h3 className="font-title text-sm font-bold uppercase tracking-wider text-one-slate">Equipo evaluado</h3>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Buscar..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="rounded-full border border-white/15 bg-black/40 px-3 py-1.5 text-xs text-white focus:border-one-cyan/50 focus:outline-none"
-                  />
-                  <select
-                    value={filterTipo}
-                    onChange={(e) => setFilterTipo(e.target.value)}
-                    className="rounded-full border border-white/15 bg-black/40 px-3 py-1.5 text-xs text-white focus:border-one-cyan/50 focus:outline-none"
-                  >
-                    <option value="">Todos los tipos</option>
-                    {presentTypes.map((t) => (
-                      <option key={t} value={t}>
-                        T{t} — {TIPO_CORTO[t]}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                {filteredPersons.map((p, i) => (
-                  <button
-                    key={i}
-                    onClick={() => openPersonModal(persons.indexOf(p), 'perfil')}
-                    className="cursor-pointer rounded-xl border border-white/10 bg-black/30 p-4 text-left transition-all hover:-translate-y-0.5 hover:border-one-cyan/40"
-                    style={{ borderTopColor: TIPO_COLORS[p.tipo], borderTopWidth: 2 }}
-                  >
-                    <div
-                      className="mb-2 flex h-8 w-8 items-center justify-center rounded-full text-sm font-black text-white"
-                      style={{ backgroundColor: TIPO_COLORS[p.tipo] }}
-                    >
-                      {p.tipo}
-                    </div>
-                    <div className="truncate text-sm font-semibold">{sanitizeText(p.nombre)}</div>
-                    <div className="text-xs text-one-slate">
-                      T{p.tipo} — {TIPO_CORTO[p.tipo]}
-                    </div>
-                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
-                      <div className="h-full rounded-full" style={{ width: `${p.scores[p.tipo] || 0}%`, backgroundColor: TIPO_COLORS[p.tipo] }} />
-                    </div>
-                  </button>
-                ))}
               </div>
             </div>
 
@@ -529,7 +501,64 @@ export default function PanelData() {
                 </div>
               </div>
             </div>
+          </>
+          )}
 
+          {activeTab === 'equipo' && (
+            <div className="mb-8 rounded-2xl border border-white/10 bg-white/5 p-5">
+              <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h3 className="font-title text-sm font-bold uppercase tracking-wider text-one-slate">Equipo evaluado</h3>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Buscar..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="rounded-full border border-white/15 bg-black/40 px-3 py-1.5 text-xs text-white focus:border-one-cyan/50 focus:outline-none"
+                  />
+                  <select
+                    value={filterTipo}
+                    onChange={(e) => setFilterTipo(e.target.value)}
+                    className="rounded-full border border-white/15 bg-black/40 px-3 py-1.5 text-xs text-white focus:border-one-cyan/50 focus:outline-none"
+                  >
+                    <option value="">Todos los tipos</option>
+                    {presentTypes.map((t) => (
+                      <option key={t} value={t}>
+                        T{t} — {TIPO_CORTO[t]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {filteredPersons.map((p, i) => (
+                  <button
+                    key={i}
+                    onClick={() => openPersonModal(persons.indexOf(p), 'perfil')}
+                    className="cursor-pointer rounded-xl border border-white/10 bg-black/30 p-4 text-left transition-all hover:-translate-y-0.5 hover:border-one-cyan/40"
+                    style={{ borderTopColor: TIPO_COLORS[p.tipo], borderTopWidth: 2 }}
+                  >
+                    <div
+                      className="mb-2 flex h-8 w-8 items-center justify-center rounded-full text-sm font-black text-white"
+                      style={{ backgroundColor: TIPO_COLORS[p.tipo] }}
+                    >
+                      {p.tipo}
+                    </div>
+                    <div className="truncate text-sm font-semibold">{sanitizeText(p.nombre)}</div>
+                    <div className="text-xs text-one-slate">
+                      T{p.tipo} — {TIPO_CORTO[p.tipo]}
+                    </div>
+                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
+                      <div className="h-full rounded-full" style={{ width: `${p.scores[p.tipo] || 0}%`, backgroundColor: TIPO_COLORS[p.tipo] }} />
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'gestion' && (
+          <>
             {/* Tabla de gestión RRHH */}
             <div className="mb-8 overflow-hidden rounded-2xl border border-white/10 bg-white/5">
               <div className="border-b border-white/10 px-5 py-4">
@@ -693,7 +722,11 @@ export default function PanelData() {
             </div>
 
             <GestionBlock title="Capacitación por tipo" dataObj={TIPO_CAPACITACION} presentTypes={presentTypes} typeCounts={typeCounts} accent="rgba(228,199,106,0.04)" />
+          </>
+          )}
 
+          {activeTab === 'cultura' && (
+          <>
             {/* Guía de comunicación */}
             <div className="mb-8">
               <h3 className="mb-4 font-title text-lg font-bold">Guía de comunicación por tipo</h3>
@@ -720,9 +753,6 @@ export default function PanelData() {
                 ))}
               </div>
             </div>
-
-            {/* ═══ CULTURA — clima organizacional, dinámicas, tríadas, confrontación, rituales ═══ */}
-            <h2 className="mb-6 border-t border-white/10 pt-8 font-title text-xl font-bold text-white">Cultura del equipo</h2>
 
             <div className="mb-8 grid gap-6 lg:grid-cols-2">
               <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
@@ -845,6 +875,8 @@ export default function PanelData() {
                 ))}
               </div>
             </div>
+          </>
+          )}
           </>
         )}
       </main>
